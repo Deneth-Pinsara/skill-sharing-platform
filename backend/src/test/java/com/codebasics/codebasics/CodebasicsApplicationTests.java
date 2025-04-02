@@ -1,10 +1,10 @@
-package com.example.skillshare;
+package com.skillSharingPlatform.skillSharingPlatform;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SkillshareApplicationTests {
+class skillSharingPlatformApplicationTests {
 
 	@Test
 	void contextLoads() {
