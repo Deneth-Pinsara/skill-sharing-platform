@@ -8,15 +8,16 @@ import Home from './pages/Home';
 import AccountPage from './pages/AccountPage';
 import UserProfile from './pages/UserProfile';
 import NotFound from './pages/NotFound';
+import UserListPage from './pages/UserListPage';
+import OAuth2Callback from './pages/OAuth2Callback';
 
-// Protected route component
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
-  
+
   return children;
 };
 
@@ -27,7 +28,8 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          
+          <Route path="/oauth2/callback" element={<OAuth2Callback />} /> 
+
           <Route path="/" element={
             <ProtectedRoute>
               <Layout />
@@ -36,8 +38,9 @@ function App() {
             <Route index element={<Home />} />
             <Route path="account" element={<AccountPage />} />
             <Route path="users/:userId" element={<UserProfile />} />
+            <Route path="/users" element={<UserListPage />} />
           </Route>
-          
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

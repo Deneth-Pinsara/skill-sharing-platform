@@ -1,5 +1,6 @@
 package com.skillSharingPlatform.skillSharingPlatform.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skillSharingPlatform.skillSharingPlatform.model.User;
 import com.skillSharingPlatform.skillSharingPlatform.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +13,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Component
@@ -19,9 +23,12 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+    
+    // Frontend URL to redirect to after successful authentication
+    private final String FRONTEND_URL = "http://localhost:5173";
 
     public OAuth2AuthenticationSuccessHandler(UserRepository userRepository, JwtUtil jwtUtil,
-            @Lazy PasswordEncoder passwordEncoder) {
+                                           @Lazy PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
@@ -29,18 +36,15 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-            Authentication authentication) throws IOException {
+                                     Authentication authentication) throws IOException {
         OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
 
-        // Extract user information from the OAuth2 provider (Google in this case)
         String email = oauthUser.getAttribute("email");
         String name = oauthUser.getAttribute("name");
         String providerId = oauthUser.getAttribute("sub");
 
-        // Try to find the user by their provider and providerId (i.e., Google ID)
         User user = userRepository.findByProviderAndProviderId("google", providerId)
                 .orElseGet(() -> {
-                    // If the user doesn't exist, create a new one
                     User newUser = new User();
                     newUser.setUsername(email);
                     newUser.setEmail(email);
@@ -51,10 +55,18 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
                     return userRepository.save(newUser);
                 });
 
-        // Generate JWT token for the authenticated user
         String token = jwtUtil.generateToken(user.getUsername());
-        // You can either redirect or send the token as a response
-        request.getSession().invalidate(); // Invalidate the session if needed
+        request.getSession().invalidate();
 
+        // Create a URL with token and user data as URL parameters
+        String redirectUrl = FRONTEND_URL + "/oauth2/callback" + 
+                "?token=" + token + 
+                "&userId=" + user.getId() + 
+                "&username=" + user.getUsername() + 
+                "&email=" + user.getEmail() + 
+                "&name=" + user.getName();
+
+        // Redirect to the frontend with the data
+        response.sendRedirect(redirectUrl);
     }
 }

@@ -17,10 +17,6 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   
-  const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:8080/login/oauth2/authorization/google";
-  };
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');

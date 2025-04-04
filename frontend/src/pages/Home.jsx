@@ -87,7 +87,7 @@ const Home = () => {
     <div className="max-w-6xl mx-auto">
       <div className="flex flex-col md:flex-row gap-6">
         {/* Left sidebar - user profile summary */}
-        <div className="w-full md:w-1/4">
+        {/* <div className="w-full md:w-1/4">
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex flex-col items-center">
               <div className="h-20 w-20 rounded-full bg-gradient-to-r from-blue-100 to-purple-100 border-2 border-white shadow-md flex items-center justify-center mb-4">
@@ -130,7 +130,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         
         {/* Center - feed posts */}
         <div className="w-full md:w-2/4">
@@ -219,7 +219,7 @@ const Home = () => {
                     <Link to={`/users/${user.id}`} className="font-medium hover:underline text-gray-800">
                       {user.name}
                     </Link>
-                    <p className="text-xs text-purple-600">@{user.username}</p>
+                    {/* <p className="text-xs text-purple-600">@{user.username}</p> */}
                   </div>
                   <button className="text-sm text-purple-600 hover:text-purple-800 font-medium">
                     Follow
@@ -228,9 +228,9 @@ const Home = () => {
               ))}
             </div>
             <div className="mt-4 pt-4 border-t">
-              <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+              <Link to={`/users`} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
                 View more
-              </button>
+              </Link>
             </div>
           </div>
           
