@@ -24,9 +24,6 @@ const OAuth2Callback = () => {
                 email,
                 name
             };
-            console.log(user)
-            // Store token in localStorage
-            localStorage.setItem('token', token);
             login(user);
             navigate('/');
         } else {
