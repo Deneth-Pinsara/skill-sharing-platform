@@ -29,34 +29,40 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
-    public String register(RegisterDTO registerDTO) {
+    public User register(RegisterDTO registerDTO) {
         if (userRepository.existsByUsername(registerDTO.getUsername())) {
             throw new RuntimeException("Username is already taken!");
         }
         if (userRepository.existsByEmail(registerDTO.getEmail())) {
             throw new RuntimeException("Email is already in use!");
         }
-
+    
         User user = new User();
         user.setUsername(registerDTO.getUsername());
         user.setEmail(registerDTO.getEmail());
         user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
         user.setName(registerDTO.getName());
         userRepository.save(user);
-
-        return "User registered successfully!";
+    
+        return user;  // Return the user object after successful registration
     }
+    
 
     public AuthResponseDTO login(LoginDTO loginDTO) {
+        // Authenticate the user with the provided credentials
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
-
-        UserDetails user = userRepository.findByUsername(loginDTO.getUsername())
+    
+        // Retrieve the user from the database based on the username
+        User user = userRepository.findByUsername(loginDTO.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found!"));
-
+    
+        // Generate JWT token using the username
         String token = jwtUtil.generateToken(user.getUsername());
-
-        return new AuthResponseDTO(token);
+    
+        // Return the AuthResponseDTO containing both the JWT token and user details
+        return new AuthResponseDTO(token, user);
     }
+    
 
     // ✅ Get all users
     public List<User> getAllUsers() {

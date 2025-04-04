@@ -5,10 +5,14 @@ import com.skillSharingPlatform.skillSharingPlatform.dto.LoginDTO;
 import com.skillSharingPlatform.skillSharingPlatform.dto.RegisterDTO;
 import com.skillSharingPlatform.skillSharingPlatform.model.User;
 import com.skillSharingPlatform.skillSharingPlatform.service.AuthService;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173") // Allow frontend access
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -19,8 +23,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody RegisterDTO registerDTO) {
-        return authService.register(registerDTO);
+    public ResponseEntity<User> register(@RequestBody RegisterDTO registerDTO) {
+        User user = authService.register(registerDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user); // Return 201 Created with the user object
     }
 
     @PostMapping("/login")
@@ -39,6 +44,7 @@ public class AuthController {
     public User getUserById(@PathVariable Long id) {
         return authService.getUserById(id);
     }
+
     // Update User
     @PutMapping("/userupdate/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody RegisterDTO registerDTO) {
