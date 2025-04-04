@@ -75,13 +75,6 @@ const AccountPage = () => {
     <div className="max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">My Account</h1>
-        <button
-          onClick={generatePDF}
-          className="flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-md hover:from-green-600 hover:to-green-700 transition-colors shadow-sm"
-        >
-          <Download size={18} className="mr-2" />
-          Download Profile PDF
-        </button>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm p-6 border border-blue-50">

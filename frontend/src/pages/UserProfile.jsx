@@ -110,7 +110,7 @@ const UserProfile = () => {
               </div>
               <div className="flex items-center text-sm text-gray-600">
                 <LinkIcon size={16} className="mr-2 text-purple-500" />
-                <a href="#" className="text-blue-600 hover:underline">socialapp.com/profile</a>
+                <a href={`http://localhost:5173/users/${userId}`} className="text-blue-600 hover:underline">http://localhost:5173/users/{userId}</a>
               </div>
             </div>
             

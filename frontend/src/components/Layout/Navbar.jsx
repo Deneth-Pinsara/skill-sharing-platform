@@ -70,7 +70,6 @@ const Navbar = ({ toggleSidebar }) => {
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10 border border-purple-100">
                   <div className="px-4 py-3 border-b border-purple-100 bg-gradient-to-r from-blue-50 to-purple-50 rounded-t-lg">
                     <p className="text-sm font-medium text-blue-800">{currentUser?.name}</p>
-                    <p className="text-xs text-purple-600">{currentUser?.email}</p>
                   </div>
                   <Link
                     to="/account"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { User, Lock, Mail, LogIn } from 'lucide-react';
@@ -12,20 +12,24 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
-  
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  
-  const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:8080/login/oauth2/authorization/google";
-  };
-  
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      navigate("/");
+    }
+    setLoading(false);
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-  
+
     try {
       const response = await fetch("http://localhost:8080/api/auth/login", {
         method: "POST",
@@ -37,27 +41,27 @@ const Login = () => {
           password: formData.password,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Login failed. Please check your credentials.");
       }
-  
+
       const data = await response.json();
       const { token, user } = data;
       localStorage.setItem("token", token);
       login(user);
       navigate("/");
-  
+
     } catch (err) {
       setError("Failed to log in. Please check your credentials.");
     }
-  
+
     setLoading(false);
   };
-  
+
   const handleSocialLogin = (provider) => {
     console.log(`Logging in with ${provider}`);
-  
+
     if (provider === 'google') {
       // Redirect to Google OAuth2 login
       window.location.href = "http://localhost:8080/login/oauth2/authorization/google";
@@ -68,8 +72,8 @@ const Login = () => {
       console.error("Unsupported provider");
     }
   };
-  
-  
+
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -82,14 +86,14 @@ const Login = () => {
             <h1 className="mt-4 text-3xl font-extrabold text-gray-900">Welcome back</h1>
             <p className="mt-2 text-sm text-gray-600">Sign in to your account</p>
           </div>
-          
+
           {/* Error Message */}
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
               {error}
             </div>
           )}
-          
+
           {/* Login Form */}
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
@@ -108,7 +112,7 @@ const Login = () => {
                   onChange={handleChange}
                 />
               </div>
-              
+
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock size={18} className="text-gray-400" />
@@ -125,7 +129,7 @@ const Login = () => {
                 />
               </div>
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <input
@@ -144,7 +148,7 @@ const Login = () => {
                 </a>
               </div>
             </div>
-            
+
             <div>
               <button
                 type="submit"
@@ -155,7 +159,7 @@ const Login = () => {
               </button>
             </div>
           </form>
-          
+
           {/* Social Login */}
           <div className="mt-6">
             <div className="relative">
@@ -166,7 +170,7 @@ const Login = () => {
                 <span className="px-2 bg-white text-gray-500">Or continue with</span>
               </div>
             </div>
-            
+
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button
                 onClick={() => handleSocialLogin('google')}
@@ -185,7 +189,7 @@ const Login = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Sign up link */}
         <p className="mt-4 text-center text-sm text-gray-600 bg-white p-4 rounded-lg shadow">
           Don't have an account?{' '}
